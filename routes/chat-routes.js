@@ -115,21 +115,15 @@ router.get('/health', async (req, res) => {
   const llamaService = require('../services/llama-service');
   
   try {
-    const status = llamaService.getStatus();
     const isHealthy = await llamaService.healthCheck();
 
     res.json({
       status: isHealthy ? 'healthy' : 'unhealthy',
-      service: 'MDS-AI-Chatbot',
-      version: require('../package.json').version,
-      ...status,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      service: 'MDS-AI-Chatbot',
-      message: error.message,
+    res.status(503).json({
+      status: 'unavailable',
       timestamp: new Date().toISOString(),
     });
   }

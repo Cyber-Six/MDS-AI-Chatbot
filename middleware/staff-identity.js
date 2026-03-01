@@ -19,7 +19,6 @@ function extractStaffIdentity(req, res, next) {
   if (!staffId) {
     return res.status(401).json({
       error: 'UNAUTHORIZED',
-      message: 'Staff authentication required (missing X-Staff-Id)',
     });
   }
 

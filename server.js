@@ -49,7 +49,7 @@ if (config.corsOrigins.length > 0) {
 
 // Body parsing
 app.use(express.json());
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 // Ensure req.body is always an object
 app.use((req, res, next) => {
@@ -63,8 +63,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     return res.status(400).json({
-      error: 'INVALID_JSON',
-      message: 'The JSON body is malformed or invalid.',
+      error: 'BAD_REQUEST',
     });
   }
   next();
@@ -80,6 +79,11 @@ app.use('/api', apiKeyAuth({ exemptPaths: [] }));
 // Routes
 // ============================================
 app.use('/api', chatRoutes);
+
+// Catch-all for undefined /api/* routes — prevent Express fingerprinting
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'NOT_FOUND' });
+});
 
 // Root route — minimal response, no service info exposed
 app.get('/', (req, res) => {

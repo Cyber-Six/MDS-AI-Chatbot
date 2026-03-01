@@ -203,7 +203,6 @@ class LlamaService {
         content: generatedText,
         tokens: response.data.tokens_predicted,
         duration,
-        model: 'llama-3-8b-instruct',
       };
 
     } catch (error) {
@@ -334,7 +333,6 @@ class LlamaService {
                     content: cleanedContent,
                     tokens: tokenCount,
                     duration,
-                    model: 'llama-3-8b-instruct',
                     streamed: true,
                   });
                 }

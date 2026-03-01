@@ -14,15 +14,13 @@ function validateMessage(req, res, next) {
 
   if (!message) {
     return res.status(400).json({
-      error: 'MESSAGE_REQUIRED',
-      message: 'Message content is required'
+      error: 'BAD_REQUEST',
     });
   }
 
   if (typeof message !== 'string') {
     return res.status(400).json({
-      error: 'INVALID_MESSAGE_TYPE',
-      message: 'Message must be a string'
+      error: 'BAD_REQUEST',
     });
   }
 
@@ -30,15 +28,13 @@ function validateMessage(req, res, next) {
   
   if (trimmedMessage.length < safetyRules.contentFilter.minMessageLength) {
     return res.status(400).json({
-      error: 'MESSAGE_TOO_SHORT',
-      message: 'Message is too short'
+      error: 'BAD_REQUEST',
     });
   }
 
   if (trimmedMessage.length > safetyRules.contentFilter.maxMessageLength) {
     return res.status(400).json({
-      error: 'MESSAGE_TOO_LONG',
-      message: `Message exceeds maximum length of ${safetyRules.contentFilter.maxMessageLength} characters`
+      error: 'BAD_REQUEST',
     });
   }
 
@@ -55,8 +51,7 @@ function validateSession(req, res, next) {
 
   if (!sessionId) {
     return res.status(400).json({
-      error: 'SESSION_REQUIRED',
-      message: 'Session ID is required'
+      error: 'BAD_REQUEST',
     });
   }
 
@@ -64,8 +59,7 @@ function validateSession(req, res, next) {
   
   if (!uuidRegex.test(sessionId)) {
     return res.status(400).json({
-      error: 'INVALID_SESSION_ID',
-      message: 'Invalid session ID format'
+      error: 'BAD_REQUEST',
     });
   }
 
@@ -101,8 +95,7 @@ function detectSpam(req, res, next) {
     });
     
     return res.status(400).json({
-      error: 'SPAM_DETECTED',
-      message: 'Message appears to be spam'
+      error: 'BAD_REQUEST',
     });
   }
 

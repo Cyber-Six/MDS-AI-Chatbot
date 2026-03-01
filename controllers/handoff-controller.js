@@ -42,8 +42,7 @@ class HandoffController {
       logger.error('Failed to get active chats', { error: error.message });
 
       return res.status(500).json({
-        error: 'FETCH_FAILED',
-        message: 'Failed to retrieve active chats',
+        error: 'INTERNAL_ERROR',
       });
     }
   }
@@ -58,7 +57,6 @@ class HandoffController {
     if (!staffId) {
       return res.status(401).json({
         error: 'UNAUTHORIZED',
-        message: 'Staff authentication required',
       });
     }
 
@@ -67,8 +65,7 @@ class HandoffController {
 
       if (!conversation) {
         return res.status(404).json({
-          error: 'SESSION_NOT_FOUND',
-          message: 'Chat session not found',
+          error: 'NOT_FOUND',
         });
       }
 
@@ -105,8 +102,7 @@ class HandoffController {
       });
 
       return res.status(500).json({
-        error: 'TAKEOVER_FAILED',
-        message: 'Failed to take over conversation',
+        error: 'INTERNAL_ERROR',
       });
     }
   }
@@ -121,7 +117,6 @@ class HandoffController {
     if (!staffId) {
       return res.status(401).json({
         error: 'UNAUTHORIZED',
-        message: 'Staff authentication required',
       });
     }
 
@@ -130,15 +125,13 @@ class HandoffController {
 
       if (!conversation) {
         return res.status(404).json({
-          error: 'SESSION_NOT_FOUND',
-          message: 'Chat session not found',
+          error: 'NOT_FOUND',
         });
       }
 
       if (conversation.staff_id !== staffId) {
         return res.status(403).json({
           error: 'FORBIDDEN',
-          message: 'You are not assigned to this conversation',
         });
       }
 
@@ -174,8 +167,7 @@ class HandoffController {
       });
 
       return res.status(500).json({
-        error: 'RELEASE_FAILED',
-        message: 'Failed to release conversation',
+        error: 'INTERNAL_ERROR',
       });
     }
   }
@@ -190,7 +182,6 @@ class HandoffController {
     if (!staffId) {
       return res.status(401).json({
         error: 'UNAUTHORIZED',
-        message: 'Staff authentication required',
       });
     }
 
@@ -199,15 +190,13 @@ class HandoffController {
 
       if (!conversation) {
         return res.status(404).json({
-          error: 'SESSION_NOT_FOUND',
-          message: 'Chat session not found',
+          error: 'NOT_FOUND',
         });
       }
 
       if (conversation.staff_id !== staffId || conversation.status !== 'staff-taken') {
         return res.status(403).json({
           error: 'FORBIDDEN',
-          message: 'You must take over the conversation first',
         });
       }
 
@@ -234,8 +223,7 @@ class HandoffController {
       });
 
       return res.status(500).json({
-        error: 'SEND_FAILED',
-        message: 'Failed to send message',
+        error: 'INTERNAL_ERROR',
       });
     }
   }
@@ -250,7 +238,6 @@ class HandoffController {
     if (!staffId) {
       return res.status(401).json({
         error: 'UNAUTHORIZED',
-        message: 'Staff authentication required',
       });
     }
 
@@ -272,8 +259,7 @@ class HandoffController {
       });
 
       return res.status(500).json({
-        error: 'TRANSCRIPT_FETCH_FAILED',
-        message: 'Failed to retrieve transcript',
+        error: 'INTERNAL_ERROR',
       });
     }
   }
@@ -315,8 +301,7 @@ class HandoffController {
       logger.error('Failed to get pending handoffs', { error: error.message });
 
       return res.status(500).json({
-        error: 'FETCH_FAILED',
-        message: 'Failed to retrieve pending handoffs',
+        error: 'INTERNAL_ERROR',
       });
     }
   }

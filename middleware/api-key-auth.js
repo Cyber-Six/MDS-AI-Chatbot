@@ -37,8 +37,7 @@ function apiKeyAuth(options = {}) {
       });
 
       return res.status(401).json({
-        error: 'API_KEY_REQUIRED',
-        message: 'Missing X-API-Key header',
+        error: 'UNAUTHORIZED',
       });
     }
 
@@ -49,9 +48,8 @@ function apiKeyAuth(options = {}) {
         method: req.method,
       });
 
-      return res.status(403).json({
-        error: 'INVALID_API_KEY',
-        message: 'Invalid API key',
+      return res.status(401).json({
+        error: 'UNAUTHORIZED',
       });
     }
 

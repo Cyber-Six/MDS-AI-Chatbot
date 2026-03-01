@@ -14,11 +14,10 @@ const logger = require('../utils/logger');
 const patientChatLimiter = rateLimit({
   windowMs: config.patientRateLimit.windowMs,
   max: config.patientRateLimit.max,
-  standardHeaders: true,
+  standardHeaders: false,
   legacyHeaders: false,
   message: {
     error: 'RATE_LIMITED',
-    message: 'Too many requests. Please slow down.',
   },
   handler: (req, res, next, options) => {
     logger.warn('Patient rate limit exceeded', {
@@ -35,11 +34,10 @@ const patientChatLimiter = rateLimit({
 const staffChatLimiter = rateLimit({
   windowMs: config.staffRateLimit.windowMs,
   max: config.staffRateLimit.max,
-  standardHeaders: true,
+  standardHeaders: false,
   legacyHeaders: false,
   message: {
     error: 'RATE_LIMITED',
-    message: 'Too many requests. Please slow down.',
   },
   handler: (req, res, next, options) => {
     logger.warn('Staff rate limit exceeded', {

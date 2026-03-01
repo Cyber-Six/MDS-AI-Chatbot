@@ -35,8 +35,7 @@ class ChatController {
     try {
       if (!sessionId) {
         return res.status(400).json({
-          error: 'INVALID_REQUEST',
-          message: 'Session ID is required'
+          error: 'BAD_REQUEST',
         });
       }
 
@@ -66,8 +65,7 @@ class ChatController {
       });
 
       return res.status(500).json({
-        error: 'CANCEL_FAILED',
-        message: 'Failed to cancel generation'
+        error: 'INTERNAL_ERROR',
       });
     }
   }
@@ -83,23 +81,20 @@ class ChatController {
 
       if (!conversation) {
         return res.status(404).json({
-          error: 'SESSION_NOT_FOUND',
-          message: 'Chat session not found'
+          error: 'NOT_FOUND',
         });
       }
 
       if (conversation.status === 'staff-taken') {
         return res.status(403).json({
-          error: 'SESSION_TAKEN_BY_STAFF',
-          message: 'A staff member has taken over this conversation'
+          error: 'FORBIDDEN',
         });
       }
 
       const limitsCheck = await conversationService.checkLimits(sessionId);
       if (limitsCheck.exceeded) {
         return res.status(429).json({
-          error: 'CONVERSATION_LIMIT_EXCEEDED',
-          message: limitsCheck.reason
+          error: 'RATE_LIMITED',
         });
       }
 
@@ -149,11 +144,7 @@ class ChatController {
           sessionId,
           message: emergencyMessage,
           role: 'assistant',
-          metadata: {
-            isEmergency: true,
-            priority: 'emergency',
-            handoffCreated: true,
-          },
+          metadata: {},
           timestamp: new Date().toISOString(),
         });
       }
@@ -175,9 +166,7 @@ class ChatController {
           sessionId,
           message: refusalMessage,
           role: 'assistant',
-          metadata: {
-            isRefusal: true,
-          },
+          metadata: {},
           timestamp: new Date().toISOString(),
         });
       }
@@ -194,8 +183,6 @@ class ChatController {
       let responseMetadata = {
         tokens: aiResponse.tokens,
         duration: aiResponse.duration,
-        model: aiResponse.model,
-        validated: validation.isValid,
       };
 
       if (!validation.isValid) {
@@ -209,7 +196,6 @@ class ChatController {
           'Please consult with a healthcare professional for appropriate guidance.';
 
         responseMetadata.safetyOverride = true;
-        responseMetadata.validationFailed = true;
       }
 
       if (emergencyDetection.isUrgent) {
@@ -240,8 +226,7 @@ class ChatController {
       });
 
       return res.status(500).json({
-        error: 'CHAT_ERROR',
-        message: 'Failed to process your message. Please try again.',
+        error: 'INTERNAL_ERROR',
       });
     }
   }
@@ -257,8 +242,6 @@ class ChatController {
     res.setHeader('Cache-Control', 'no-cache, no-transform');
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('X-Accel-Buffering', 'no');
-    res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Content-Encoding', 'none');
     
     res.flushHeaders();
@@ -294,18 +277,18 @@ class ChatController {
       let conversation = await conversationService.getConversation(sessionId);
 
       if (!conversation) {
-        sendEvent('error', { error: 'SESSION_NOT_FOUND', message: 'Chat session not found' });
+        sendEvent('error', { error: 'NOT_FOUND' });
         return res.end();
       }
 
       if (conversation.status === 'staff-taken') {
-        sendEvent('error', { error: 'SESSION_TAKEN_BY_STAFF', message: 'A staff member has taken over this conversation' });
+        sendEvent('error', { error: 'FORBIDDEN' });
         return res.end();
       }
 
       const limitsCheck = await conversationService.checkLimits(sessionId);
       if (limitsCheck.exceeded) {
-        sendEvent('error', { error: 'CONVERSATION_LIMIT_EXCEEDED', message: limitsCheck.reason });
+        sendEvent('error', { error: 'RATE_LIMITED' });
         return res.end();
       }
 
@@ -342,7 +325,7 @@ class ChatController {
             sessionId,
             message: aiResponse.content,
             role: 'assistant',
-            metadata: { tokens: aiResponse.tokens, duration: aiResponse.duration, streamed: true },
+            metadata: {},
             timestamp: new Date().toISOString(),
           });
         }
@@ -490,8 +473,7 @@ class ChatController {
       });
 
       sendEvent('error', {
-        error: 'CHAT_ERROR',
-        message: 'Failed to process your message. Please try again.',
+        error: 'INTERNAL_ERROR',
       });
       return res.end();
     }
@@ -515,8 +497,7 @@ class ChatController {
       logger.error('Failed to create chat session', { error: error.message });
 
       return res.status(500).json({
-        error: 'SESSION_CREATION_FAILED',
-        message: 'Failed to create chat session',
+        error: 'INTERNAL_ERROR',
       });
     }
   }
@@ -543,8 +524,7 @@ class ChatController {
       });
 
       return res.status(500).json({
-        error: 'HISTORY_FETCH_FAILED',
-        message: 'Failed to retrieve chat history',
+        error: 'INTERNAL_ERROR',
       });
     }
   }
@@ -570,8 +550,7 @@ class ChatController {
       });
 
       return res.status(500).json({
-        error: 'CLOSE_FAILED',
-        message: 'Failed to close conversation',
+        error: 'INTERNAL_ERROR',
       });
     }
   }
