@@ -242,7 +242,6 @@ class ChatController {
     res.setHeader('Cache-Control', 'no-cache, no-transform');
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('X-Accel-Buffering', 'no');
-    res.setHeader('Content-Encoding', 'none');
     
     res.flushHeaders();
 
