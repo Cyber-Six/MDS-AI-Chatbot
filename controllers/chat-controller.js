@@ -249,12 +249,22 @@ class ChatController {
     const abortController = new AbortController();
     let isCancelled = false;
 
+    // SSE heartbeat keep-alive: send a comment every 15s to prevent
+    // Cloudflare Tunnel / reverse-proxy idle-timeout disconnects (502).
+    const heartbeatInterval = setInterval(() => {
+      if (!isCancelled && !res.writableEnded) {
+        res.write(': heartbeat\n\n');
+      }
+    }, 15000);
+
     this.activeSessions.set(sessionId, {
       abortController,
       isCancelled: false
     });
 
     req.on('close', () => {
+      clearInterval(heartbeatInterval);
+
       const sessionData = this.activeSessions.get(sessionId);
       if (sessionData && sessionData.isCancelled) {
         isCancelled = true;
@@ -278,17 +288,20 @@ class ChatController {
 
       if (!conversation) {
         sendEvent('error', { error: 'NOT_FOUND' });
+        clearInterval(heartbeatInterval);
         return res.end();
       }
 
       if (conversation.status === 'staff-taken') {
         sendEvent('error', { error: 'FORBIDDEN' });
+        clearInterval(heartbeatInterval);
         return res.end();
       }
 
       const limitsCheck = await conversationService.checkLimits(sessionId);
       if (limitsCheck.exceeded) {
         sendEvent('error', { error: 'RATE_LIMITED' });
+        clearInterval(heartbeatInterval);
         return res.end();
       }
 
@@ -329,6 +342,7 @@ class ChatController {
             timestamp: new Date().toISOString(),
           });
         }
+        clearInterval(heartbeatInterval);
         return res.end();
       }
 
@@ -357,6 +371,7 @@ class ChatController {
           metadata: { isEmergency: true, priority: 'emergency', handoffCreated: true },
           timestamp: new Date().toISOString(),
         });
+        clearInterval(heartbeatInterval);
         return res.end();
       }
 
@@ -379,6 +394,7 @@ class ChatController {
           metadata: { isRefusal: true },
           timestamp: new Date().toISOString(),
         });
+        clearInterval(heartbeatInterval);
         return res.end();
       }
 
@@ -455,11 +471,13 @@ class ChatController {
       }
 
       this.activeSessions.delete(sessionId);
+      clearInterval(heartbeatInterval);
 
       return res.end();
 
     } catch (error) {
       this.activeSessions.delete(sessionId);
+      clearInterval(heartbeatInterval);
       
       if (error.name === 'AbortError' || isCancelled) {
         logger.info('Streaming request cancelled by client', { sessionId });
