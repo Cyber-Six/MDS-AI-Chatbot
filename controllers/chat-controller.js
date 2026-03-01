@@ -249,11 +249,12 @@ class ChatController {
     const abortController = new AbortController();
     let isCancelled = false;
 
-    // SSE heartbeat keep-alive: send a comment every 15s to prevent
+    // SSE heartbeat keep-alive: send a named event every 15s to prevent
     // Cloudflare Tunnel / reverse-proxy idle-timeout disconnects (502).
+    // Use a named event (not an SSE comment) since some CDN layers strip comments.
     const heartbeatInterval = setInterval(() => {
       if (!isCancelled && !res.writableEnded) {
-        res.write(': heartbeat\n\n');
+        res.write('event: heartbeat\ndata: {}\n\n');
       }
     }, 15000);
 
