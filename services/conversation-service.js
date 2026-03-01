@@ -38,7 +38,7 @@ class ConversationService {
         ? 'Hello! I\'m your AI medical assistant. How can I help you today?\n\n' +
           'You can ask me about general health questions, symptom information, or wellness tips.\n\n' +
           'Note: I provide general health information only, not professional medical advice.'
-        : 'Hello! How can I help you today?';
+        : 'Hello! How can I help you?';
 
       await this.addMessage(session.id, 'assistant', greeting, { isGreeting: true });
 

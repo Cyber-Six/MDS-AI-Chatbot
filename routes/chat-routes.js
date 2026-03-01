@@ -2,9 +2,9 @@
  * Chat Routes (Standalone Microservice)
  * 
  * Routes are organized into:
- * - /patient/* — Patient-facing endpoints (rate limited, no auth beyond API key)
- * - /staff/*   — Staff-facing endpoints (staff identity from proxy headers)
- * - /health    — Health check (no API key required)
+ * - /patient/* — Patient-facing endpoints (rate limited, API key required)
+ * - /staff/*   — Staff-facing endpoints (staff identity from proxy headers, API key required)
+ * - /health    — Health check (API key required)
  */
 
 const express = require('express');
@@ -108,7 +108,7 @@ router.get('/staff/transcript/:sessionId',
 );
 
 // ============================================
-// Health Check (exempt from API key)
+// Health Check (API key required)
 // ============================================
 
 router.get('/health', async (req, res) => {

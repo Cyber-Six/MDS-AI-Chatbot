@@ -4,57 +4,44 @@
  */
 
 const path = require('path');
-const os = require('os');
 
-// Helper function to expand tilde paths
-const expandPath = (p) => {
-  if (p.startsWith('~')) {
-    return path.join(os.homedir(), p.slice(1));
-  }
-  return p;
-};
+// Model Settings - modelPath only needed if AUTO_START_LLAMA=true
+// const os = require('os');
+// const expandPath = (p) => p.startsWith('~') ? path.join(os.homedir(), p.slice(1)) : p;
 
 module.exports = {
   // Safety Mode Toggle (true = full medical safety, false = fast plain mode)
   safetyMode: process.env.MEDICAL_SAFETY_MODE === 'true',
 
-  // Model Settings
-  modelPath: expandPath(process.env.LLAMA_MODEL_PATH || '~/AI/llama.cpp/models/Phi-3-mini-4k-instruct-Q4_K_M.gguf'),
-  
-  // Server Configuration
+  // Server Configuration (llama-server managed by mdsystem-ai.service)
   llamaServer: {
     host: process.env.LLAMA_SERVER_HOST || 'localhost',
     port: process.env.LLAMA_SERVER_PORT || 8080,
     timeout: parseInt(process.env.LLAMA_REQUEST_TIMEOUT || '300000', 10),
     healthCheckTimeout: parseInt(process.env.LLAMA_HEALTH_CHECK_TIMEOUT || '120000', 10),
-    startupTimeout: parseInt(process.env.LLAMA_STARTUP_TIMEOUT || '600000', 10),
-    shutdownTimeout: parseInt(process.env.LLAMA_SHUTDOWN_TIMEOUT || '120000', 10),
-    serverBin: expandPath(process.env.LLAMA_SERVER_BIN || '~/AI/llama.cpp/build/bin/llama-server'),
-    threads: parseInt(process.env.LLAMA_THREADS || '3', 10),
   },
 
-  // On-Demand Configuration
+  // On-Demand disabled — llama is externally managed
   onDemand: {
-    enabled: process.env.AUTO_START_LLAMA === 'true',
-    idleTimeoutMinutes: parseInt(process.env.AI_IDLE_TIMEOUT_MINUTES || '20', 10),
+    enabled: false,
   },
 
-  // Generation Parameters (optimized for medical safety)
+  // Generation Parameters
   generationParams: {
     temperature: 0.4,
-    topP: 0.9,
-    topK: 40,
+    topP: 0.85,
+    topK: 20,
     repeatPenalty: 1.15,
-    maxTokens: 500,
-    contextSize: 1024,
+    maxTokens: 300,
+    contextSize: 4096,
     stop: ['\n\nUser:', '\n\nHuman:', 'User:', 'Human:'],
   },
 
-  // System Prompt for SAFETY MODE (full medical guardrails)
-  systemPrompt: `You are a medical support assistant. You do NOT diagnose or prescribe. You provide general health information and encourage consulting a doctor. For emergencies (chest pain, breathing issues, severe bleeding, suicidal thoughts), instruct to seek immediate help.`,
+  // System Prompt for SAFETY MODE — kept short for small model context window
+  systemPrompt: 'You are a medical support assistant. Provide general health info only. Never diagnose, prescribe, or give treatment plans. For emergencies (chest pain, breathing issues, severe bleeding, suicidal thoughts), direct to emergency services immediately. Decline non-health topics.',
 
-  // System Prompt for FAST MODE (minimal, plain responses)
-  systemPromptFast: `You are a helpful health assistant. Answer questions concisely and helpfully.`,
+  // No system prompt for FAST MODE — raw passthrough to the model
+  systemPromptFast: '',
 
   // Retry Configuration
   retry: {

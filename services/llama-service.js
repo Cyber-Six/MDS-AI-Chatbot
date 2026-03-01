@@ -406,7 +406,7 @@ class LlamaService {
    */
   formatPrompt(messages) {
     const sysPrompt = config.safetyMode ? config.systemPrompt : config.systemPromptFast;
-    let prompt = sysPrompt + '\n\n';
+    let prompt = sysPrompt ? sysPrompt + '\n\n' : '';
 
     for (const msg of messages) {
       if (msg.role === 'user') {

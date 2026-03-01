@@ -34,15 +34,17 @@ const app = express();
 // Security headers
 app.use(helmet());
 
-// CORS — only needed if accessed directly (not through proxy)
+// CORS — restrict to allowed origins only
 if (config.corsOrigins.length > 0) {
   app.use(cors({
     origin: config.corsOrigins,
     credentials: true,
   }));
 } else {
-  // When behind a proxy, be permissive (proxy handles CORS)
-  app.use(cors());
+  // No origins configured — reject all cross-origin requests
+  app.use(cors({
+    origin: false,
+  }));
 }
 
 // Body parsing
@@ -71,22 +73,17 @@ app.use((err, req, res, next) => {
 // ============================================
 // API Key Authentication
 // ============================================
-// All routes require X-API-Key header except /health
-app.use('/api', apiKeyAuth({ exemptPaths: ['/health'] }));
+// ALL routes require X-API-Key header — no exceptions
+app.use('/api', apiKeyAuth({ exemptPaths: [] }));
 
 // ============================================
 // Routes
 // ============================================
 app.use('/api', chatRoutes);
 
-// Root route — service info
+// Root route — minimal response, no service info exposed
 app.get('/', (req, res) => {
-  res.json({
-    service: 'MDS-AI-Chatbot',
-    version: require('./package.json').version,
-    status: 'running',
-    docs: 'Use /api/health for health check',
-  });
+  res.status(404).json({ error: 'NOT_FOUND' });
 });
 
 // ============================================

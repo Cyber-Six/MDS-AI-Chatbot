@@ -14,7 +14,7 @@ const logger = require('../utils/logger');
  * @param {string[]} [options.exemptPaths] - Paths that don't require API key (e.g. /health)
  */
 function apiKeyAuth(options = {}) {
-  const { exemptPaths = ['/health'] } = options;
+  const { exemptPaths = [] } = options;
 
   return (req, res, next) => {
     // Propagate request ID from proxy for traceability
