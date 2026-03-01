@@ -24,11 +24,11 @@ if [ ! -f .env ]; then
 fi
 
 # Read database config from .env
-DB_HOST=$(grep DB_HOST .env | cut -d'=' -f2 | tr -d ' ')
-DB_PORT=$(grep DB_PORT .env | cut -d'=' -f2 | tr -d ' ')
-DB_USER=$(grep DB_USER .env | cut -d'=' -f2 | tr -d ' ')
-DB_PASSWORD=$(grep DB_PASSWORD .env | cut -d'=' -f2 | tr -d ' ')
-DB_NAME=$(grep DB_NAME .env | cut -d'=' -f2 | tr -d ' ')
+DB_HOST=$(grep CHATBOT_DB_HOST .env | cut -d'=' -f2 | tr -d " '")
+DB_PORT=$(grep CHATBOT_DB_PORT .env | cut -d'=' -f2 | tr -d " '")
+DB_USER=$(grep CHATBOT_DB_USER .env | cut -d'=' -f2 | tr -d " '")
+DB_PASSWORD=$(grep CHATBOT_DB_PASSWORD .env | cut -d'=' -f2 | tr -d " '")
+DB_NAME=$(grep CHATBOT_DB_NAME .env | cut -d'=' -f2 | tr -d " '")
 
 # Use defaults if not set
 DB_HOST=${DB_HOST:-localhost}
