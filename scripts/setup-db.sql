@@ -1,5 +1,5 @@
 -- ============================================
--- MDS-AI-Chatbot Database Setup
+-- MDS-Chatbot Database Setup
 -- ============================================
 -- Run this script to create the chatbot's own database and tables.
 -- Execute as a PostgreSQL superuser or the designated DB user.

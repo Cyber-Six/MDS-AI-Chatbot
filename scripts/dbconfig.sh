@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================
-# MDS-AI-Chatbot Database Setup Script
+# MDS-Chatbot Database Setup Script
 # ============================================
 # Run on the database server to initialize the chatbot database
 # Usage: bash setup-db.sh
@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 echo "============================================"
-echo "  MDS-AI-Chatbot Database Setup"
+echo "  MDS-Chatbot Database Setup"
 echo "============================================"
 echo ""
 

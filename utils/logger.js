@@ -11,7 +11,7 @@ if (!fs.existsSync(logDir)) {
 function getDailyLogFile() {
   return path.join(
     logDir,
-    `mds-ai-chatbot-${new Date().toISOString().slice(0, 10)}.log`
+    `mds-chatbot-${new Date().toISOString().slice(0, 10)}.log`
   );
 }
 

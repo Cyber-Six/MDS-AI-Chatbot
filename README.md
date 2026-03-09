@@ -1,4 +1,4 @@
-# MDS-AI-Chatbot
+# MDS-Chatbot
 
 AI Medical Chatbot Microservice for MDSystem.
 
@@ -10,7 +10,7 @@ This is a standalone microservice that provides AI-powered medical chat function
 Frontend (mds-patient/mds-staff)
     │
     ▼
-Backend (www/www2)  ──── /econsultation/chat/* ────►  MDS-AI-Chatbot (this service)
+Backend (www/www2)  ──── /econsultation/chat/* ────►  MDS-Chatbot (this service)
     │                    X-API-Key header                    │
     │                    X-Staff-Id (for staff routes)       ▼
     │                                                  llama.cpp server
@@ -22,7 +22,7 @@ Backend (www/www2)  ──── /econsultation/chat/* ────►  MDS-AI-C
 ### Key Design Decisions
 
 - **Backend proxy pattern**: Frontends never call the chatbot directly. The main backend proxies `/econsultation/chat/*` requests, injecting an API key for authentication.
-- **Localhost optimization**: If the chatbot is running on the same server, `CHATBOT_URL=http://localhost:4000` avoids any internet round-trip.
+- **Localhost optimization**: If the chatbot is running on the same server, `CHATBOT_URL=http://localhost:3005` avoids any internet round-trip.
 - **Remote fallback**: Servers without a local chatbot set `CHATBOT_URL=https://ai.mdsystemtip.space` to reach it over the network.
 - **Zero frontend changes**: The patient and staff portals keep calling the same `/econsultation/chat/*` endpoints.
 
@@ -74,7 +74,7 @@ npm start
 
 # Or with systemd
 sudo bash scripts/setup-service.sh
-sudo systemctl start mds-ai-chatbot
+sudo systemctl start mds-chatbot
 ```
 
 ### 5. Configure Backend Proxy
@@ -83,7 +83,7 @@ Add to the Backend `.env` on each server:
 
 ```env
 # Server with chatbot running locally (fast path)
-CHATBOT_URL=http://localhost:4000
+CHATBOT_URL=http://localhost:3005
 CHATBOT_API_KEY=<same-key-as-chatbot>
 
 # Server WITHOUT chatbot (remote path)

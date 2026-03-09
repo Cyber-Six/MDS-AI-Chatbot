@@ -1,6 +1,6 @@
 const config = {
   // Server
-  port: parseInt(process.env.CHATBOT_PORT, 10) || 4000,
+  port: parseInt(process.env.CHATBOT_PORT, 10) || 3005,
   host: process.env.CHATBOT_HOST || '0.0.0.0',
 
   // API Key for service-to-service auth

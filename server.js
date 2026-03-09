@@ -1,7 +1,7 @@
 /**
- * MDS-AI-Chatbot Microservice - Entry Point
+ * MDS-Chatbot Microservice - Entry Point
  * 
- * Standalone Express server for the MDS AI Medical Chatbot.
+ * Standalone Express server for the MDS Medical Chatbot.
  * Designed to run independently from the main MDSystem backend.
  * 
  * Architecture:
@@ -96,7 +96,7 @@ app.get('/', (req, res) => {
 
 async function start() {
   try {
-    logger.info('Starting MDS-AI-Chatbot Microservice...');
+    logger.info('Starting MDS-Chatbot Microservice...');
 
     // Initialize llama.cpp connection
     const autoStart = process.env.AUTO_START_LLAMA === 'true';
@@ -110,7 +110,7 @@ async function start() {
 
     // Start HTTP server
     const server = app.listen(config.port, config.host, () => {
-      logger.info(`✅ MDS-AI-Chatbot Microservice running on ${config.host}:${config.port}`);
+      logger.info(`✅ MDS-Chatbot Microservice running on ${config.host}:${config.port}`);
       logger.info(`   Health check: http://${config.host}:${config.port}/api/health`);
     });
 
@@ -121,7 +121,7 @@ async function start() {
       await llamaService.shutdown();
       
       server.close(() => {
-        logger.info('MDS-AI-Chatbot Microservice shut down');
+        logger.info('MDS-Chatbot Microservice shut down');
         process.exit(0);
       });
 
@@ -136,7 +136,7 @@ async function start() {
     process.on('SIGINT', () => shutdown('SIGINT'));
 
   } catch (error) {
-    logger.error('Failed to start MDS-AI-Chatbot Microservice', {
+    logger.error('Failed to start MDS-Chatbot Microservice', {
       error: error.message,
       stack: error.stack,
     });

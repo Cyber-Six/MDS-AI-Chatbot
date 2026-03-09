@@ -1,7 +1,7 @@
 {
-  "name": "mds-ai-chatbot",
+  "name": "mds-chatbot",
   "version": "1.0.0",
-  "description": "MDS AI Chatbot Microservice — standalone AI medical chat service for MDSystem",
+  "description": "MDS Chatbot Microservice — standalone AI medical chat service for MDSystem",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
